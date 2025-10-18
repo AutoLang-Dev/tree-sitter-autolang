@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "autolang",
+      "camelcase": "AutoLang",
+      "title": "AutoLang",
+      "scope": "source.autolang",
+      "file-types": [
+        "al"
+      ],
+      "injection-regex": "^autolang$",
+      "class-name": "TreeSitterAutolang"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "AutoLang Parser",
+    "authors": [
+      {
+        "name": "AutoLang-Dev",
+        "email": "contact@autolang.dev",
+        "url": "https://autolang.dev/"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/AutoLang-Dev/tree-sitter-autolang"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
