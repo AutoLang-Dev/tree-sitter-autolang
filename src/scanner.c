@@ -6,17 +6,9 @@ enum TokenType {
   LLVM_IR,
 };
 
-typedef struct {
+void *tree_sitter_autolang_external_scanner_create() { return NULL; }
 
-} Scanner;
-
-void *tree_sitter_autolang_external_scanner_create() {
-  return ts_calloc(1, sizeof(Scanner));
-}
-
-void tree_sitter_autolang_external_scanner_destroy(void *payload) {
-  ts_free((Scanner *)payload);
-}
+void tree_sitter_autolang_external_scanner_destroy(void *payload) {}
 
 unsigned tree_sitter_autolang_external_scanner_serialize(void *payload,
                                                          char *buffer) {
