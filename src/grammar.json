@@ -1165,21 +1165,24 @@
       "name": "_label"
     },
     "_label": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "'"
-        },
-        {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "PATTERN",
-            "value": "[_\\p{XID_Start}][\\p{XID_Continue}]*",
-            "flags": "u"
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "'"
+          },
+          {
+            "type": "IMMEDIATE_TOKEN",
+            "content": {
+              "type": "PATTERN",
+              "value": "[_\\p{XID_Start}][\\p{XID_Continue}]*",
+              "flags": "u"
+            }
           }
-        }
-      ]
+        ]
+      }
     },
     "underscore": {
       "type": "SYMBOL",
