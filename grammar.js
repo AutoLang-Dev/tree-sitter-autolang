@@ -25,11 +25,16 @@ module.exports = grammar({
   externals: $ => [$.llvm_ir],
 
   rules: {
-    trans_unit: $ => repeat($._decl_stmt),
+    trans_unit: $ => repeat($._global_stmt),
+
+    _global_stmt: $ => choice(
+      $.asm_block,
+      $._decl_stmt,
+      $.empty_stmt,
+    ),
 
     decl_stmt: $ => $._decl_stmt,
     _decl_stmt: $ => choice(
-      prec(1, $.asm_block),
       $.fn_def,
       $.binding_decl,
     ),
@@ -141,11 +146,12 @@ module.exports = grammar({
 
     stmt: $ => $._stmt,
     _stmt: $ => choice(
-      $.asm_block,
       $.expr_stmt,
-      $._decl_stmt,
-      alias(';', $.empty_stmt),
+      $._global_stmt,
     ),
+
+    empty_stmt: $ => $._empty_stmt,
+    _empty_stmt: _ => ';',
 
     asm_block: $ => $._asm_block,
     _asm_block: $ => seq(
