@@ -144,6 +144,7 @@ module.exports = grammar({
       $.asm_block,
       $.expr_stmt,
       $._decl_stmt,
+      alias(';', $.empty_stmt),
     ),
 
     asm_block: $ => $._asm_block,
