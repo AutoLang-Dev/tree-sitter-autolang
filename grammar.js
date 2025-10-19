@@ -129,7 +129,7 @@ module.exports = grammar({
     pat_ident: $ => $._pat_ident,
     _pat_ident: $ => seq(
       optional('mut'),
-      field('ident', $.ident),
+      field('id', $.ident),
     ),
 
     pat_type: $ => $._pat_type,
@@ -206,7 +206,7 @@ module.exports = grammar({
 
     expr_ending_with_block: $ => $._expr_ending_with_block,
     _expr_ending_with_block: $ => choice(
-      $.labelled,
+      $.labeled,
       $.block,
       $.if_expr,
       $.while_expr,
@@ -254,8 +254,8 @@ module.exports = grammar({
       $.block,
     ),
 
-    labelled: $ => $._labelled,
-    _labelled: $ => seq(
+    labeled: $ => $._labeled,
+    _labeled: $ => seq(
       field('label', $.label),
       ':',
       field('block', choice(
