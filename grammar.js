@@ -114,10 +114,10 @@ module.exports = grammar({
     _typed_binding_decl: $ => seq(
       field('pat', $._pattern),
       ':',
-      field('type', $._type),
+      field('ty', $._type),
       optional(seq(
         '=',
-        field('value', $._expr),
+        field('val', $._expr),
       )),
       ';',
     ),
@@ -127,7 +127,7 @@ module.exports = grammar({
       field('pat', $._pattern),
       ':',
       '=',
-      field('value', $._expr),
+      field('val', $._expr),
       ';',
     ),
 
@@ -226,22 +226,22 @@ module.exports = grammar({
 
     as_expr: $ => $._as_expr,
     _as_expr: $ => prec.left(PREC.as, seq(
-      field('value', $._expr),
+      field('val', $._expr),
       'as',
-      field('type', $._type),
+      field('ty', $._type),
     )),
 
     break_expr: $ => $._break_expr,
     _break_expr: $ => prec.left(seq(
       'break',
-      field('label', optional($.label)),
-      field('value', $._expr),
+      field('lab', optional($.label)),
+      field('val', $._expr),
     )),
 
     cont_expr: $ => $._cont_expr,
     _cont_expr: $ => prec.left(seq(
       'cont',
-      field('label', optional($.label)),
+      field('lab', optional($.label)),
     )),
 
     expr_ending_with_block: $ => $._expr_ending_with_block,
@@ -275,7 +275,7 @@ module.exports = grammar({
       'while',
       field('cond', $._expr),
       field('body', $.block),
-      optional(field('else', $._loop_else_clause)),
+      optional(field('el', $._loop_else_clause)),
     ),
 
     for_expr: $ => $._for_expr,
@@ -283,9 +283,9 @@ module.exports = grammar({
       'for',
       field('pat', $._pattern),
       'in',
-      field('value', $._expr),
+      field('range', $._expr),
       field('body', $.block),
-      optional(field('else', $._loop_else_clause)),
+      optional(field('el', $._loop_else_clause)),
     ),
 
     loop_else_clause: $ => $._loop_else_clause,
@@ -296,7 +296,7 @@ module.exports = grammar({
 
     labeled: $ => $._labeled,
     _labeled: $ => seq(
-      field('label', $.label),
+      field('lab', $.label),
       ':',
       field('block', choice(
         $.block,
