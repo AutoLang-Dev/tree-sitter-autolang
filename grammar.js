@@ -24,6 +24,22 @@ module.exports = grammar({
 
   externals: $ => [$.llvm_ir],
 
+  reserved: {
+    global: _ => [
+      'fn',
+      'mut',
+      'asm',
+      'as',
+      'if',
+      'else',
+      'while',
+      'for',
+      'in',
+    ],
+  },
+
+  word: $ => $._ident,
+
   rules: {
     trans_unit: $ => repeat($._global_stmt),
 
