@@ -35,6 +35,8 @@ module.exports = grammar({
       'while',
       'for',
       'in',
+      'break',
+      'cont',
     ],
   },
 
@@ -190,6 +192,8 @@ module.exports = grammar({
       $.call_expr,
       $.paren_expr,
       $.as_expr,
+      $.break_expr,
+      $.cont_expr,
       $._expr_ending_with_block,
     ),
 
@@ -225,6 +229,19 @@ module.exports = grammar({
       field('value', $._expr),
       'as',
       field('type', $._type),
+    )),
+
+    break_expr: $ => $._break_expr,
+    _break_expr: $ => prec.left(seq(
+      'break',
+      field('label', optional($.label)),
+      field('value', $._expr),
+    )),
+
+    cont_expr: $ => $._cont_expr,
+    _cont_expr: $ => prec.left(seq(
+      'cont',
+      field('label', optional($.label)),
     )),
 
     expr_ending_with_block: $ => $._expr_ending_with_block,
