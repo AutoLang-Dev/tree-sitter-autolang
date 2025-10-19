@@ -206,6 +206,7 @@ module.exports = grammar({
 
     expr_ending_with_block: $ => $._expr_ending_with_block,
     _expr_ending_with_block: $ => choice(
+      $.labelled,
       $.block,
       $.if_expr,
       $.while_expr,
@@ -231,7 +232,6 @@ module.exports = grammar({
 
     while_expr: $ => $._while_expr,
     _while_expr: $ => seq(
-      field('label', optional($._stmt_label)),
       'while',
       field('cond', $._expr),
       field('body', $.block),
@@ -240,7 +240,6 @@ module.exports = grammar({
 
     for_expr: $ => $._for_expr,
     _for_expr: $ => seq(
-      field('label', optional($._stmt_label)),
       'for',
       field('pat', $._pattern),
       'in',
@@ -255,10 +254,15 @@ module.exports = grammar({
       $.block,
     ),
 
-    labelled_block: $ => $._labelled_block,
-    _labelled_block: $ => seq(
-      optional(field('label', $._stmt_label)),
-      field('block', $.block),
+    labelled: $ => $._labelled,
+    _labelled: $ => seq(
+      field('label', $.label),
+      ':',
+      field('block', choice(
+        $.block,
+        $.while_expr,
+        $.for_expr,
+      )),
     ),
 
     block: $ => $._block,
@@ -271,9 +275,6 @@ module.exports = grammar({
 
     label: $ => $._label,
     _label: _ => seq("'", token.immediate(IdentRegex)),
-
-    stmt_label: $ => $._stmt_label,
-    _stmt_label: $ => seq($.label, ':'),
 
     underscore: $ => $._underscore,
     _underscore: _ => '_',
