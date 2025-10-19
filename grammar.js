@@ -214,7 +214,6 @@ module.exports = grammar({
 
     if_expr: $ => $._if_expr,
     _if_expr: $ => seq(
-      field('label', optional($._stmt_label)),
       'if',
       field('cond', $._expr),
       field('tru', $.block),
