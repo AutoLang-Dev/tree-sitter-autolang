@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-autolang
 HOMEPAGE_URL := https://github.com/autolang-dev/tree-sitter-autolang
-VERSION := 0.2.0
+VERSION := 0.3.0
 
 # repository
 SRC_DIR := src

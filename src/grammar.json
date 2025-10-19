@@ -1,13 +1,31 @@
 {
   "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "autolang",
+  "word": "_ident",
   "rules": {
     "trans_unit": {
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
-        "name": "_decl_stmt"
+        "name": "_global_stmt"
       }
+    },
+    "_global_stmt": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "asm_block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_decl_stmt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "empty_stmt"
+        }
+      ]
     },
     "decl_stmt": {
       "type": "SYMBOL",
@@ -16,14 +34,6 @@
     "_decl_stmt": {
       "type": "CHOICE",
       "members": [
-        {
-          "type": "PREC",
-          "value": 1,
-          "content": {
-            "type": "SYMBOL",
-            "name": "asm_block"
-          }
-        },
         {
           "type": "SYMBOL",
           "name": "fn_def"
@@ -298,7 +308,7 @@
         },
         {
           "type": "FIELD",
-          "name": "type",
+          "name": "ty",
           "content": {
             "type": "SYMBOL",
             "name": "_type"
@@ -316,7 +326,7 @@
                 },
                 {
                   "type": "FIELD",
-                  "name": "value",
+                  "name": "val",
                   "content": {
                     "type": "SYMBOL",
                     "name": "_expr"
@@ -360,7 +370,7 @@
         },
         {
           "type": "FIELD",
-          "name": "value",
+          "name": "val",
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -489,26 +499,21 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "asm_block"
-        },
-        {
-          "type": "SYMBOL",
           "name": "expr_stmt"
         },
         {
           "type": "SYMBOL",
-          "name": "_decl_stmt"
-        },
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "STRING",
-            "value": ";"
-          },
-          "named": true,
-          "value": "empty_stmt"
+          "name": "_global_stmt"
         }
       ]
+    },
+    "empty_stmt": {
+      "type": "SYMBOL",
+      "name": "_empty_stmt"
+    },
+    "_empty_stmt": {
+      "type": "STRING",
+      "value": ";"
     },
     "asm_block": {
       "type": "SYMBOL",
@@ -595,6 +600,14 @@
         {
           "type": "SYMBOL",
           "name": "as_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "break_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cont_expr"
         },
         {
           "type": "SYMBOL",
@@ -755,7 +768,7 @@
         "members": [
           {
             "type": "FIELD",
-            "name": "value",
+            "name": "val",
             "content": {
               "type": "SYMBOL",
               "name": "_expr"
@@ -767,10 +780,84 @@
           },
           {
             "type": "FIELD",
-            "name": "type",
+            "name": "ty",
             "content": {
               "type": "SYMBOL",
               "name": "_type"
+            }
+          }
+        ]
+      }
+    },
+    "break_expr": {
+      "type": "SYMBOL",
+      "name": "_break_expr"
+    },
+    "_break_expr": {
+      "type": "PREC_LEFT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "break"
+          },
+          {
+            "type": "FIELD",
+            "name": "lab",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "label"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "val",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
+            }
+          }
+        ]
+      }
+    },
+    "cont_expr": {
+      "type": "SYMBOL",
+      "name": "_cont_expr"
+    },
+    "_cont_expr": {
+      "type": "PREC_LEFT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "cont"
+          },
+          {
+            "type": "FIELD",
+            "name": "lab",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "label"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
             }
           }
         ]
@@ -908,7 +995,7 @@
           "members": [
             {
               "type": "FIELD",
-              "name": "else",
+              "name": "el",
               "content": {
                 "type": "SYMBOL",
                 "name": "_loop_else_clause"
@@ -946,7 +1033,7 @@
         },
         {
           "type": "FIELD",
-          "name": "value",
+          "name": "range",
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -965,7 +1052,7 @@
           "members": [
             {
               "type": "FIELD",
-              "name": "else",
+              "name": "el",
               "content": {
                 "type": "SYMBOL",
                 "name": "_loop_else_clause"
@@ -1004,7 +1091,7 @@
       "members": [
         {
           "type": "FIELD",
-          "name": "label",
+          "name": "lab",
           "content": {
             "type": "SYMBOL",
             "name": "label"
@@ -1133,5 +1220,52 @@
   ],
   "inline": [],
   "supertypes": [],
-  "reserved": {}
+  "reserved": {
+    "global": [
+      {
+        "type": "STRING",
+        "value": "fn"
+      },
+      {
+        "type": "STRING",
+        "value": "mut"
+      },
+      {
+        "type": "STRING",
+        "value": "asm"
+      },
+      {
+        "type": "STRING",
+        "value": "as"
+      },
+      {
+        "type": "STRING",
+        "value": "if"
+      },
+      {
+        "type": "STRING",
+        "value": "else"
+      },
+      {
+        "type": "STRING",
+        "value": "while"
+      },
+      {
+        "type": "STRING",
+        "value": "for"
+      },
+      {
+        "type": "STRING",
+        "value": "in"
+      },
+      {
+        "type": "STRING",
+        "value": "break"
+      },
+      {
+        "type": "STRING",
+        "value": "cont"
+      }
+    ]
+  }
 }

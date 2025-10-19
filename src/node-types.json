@@ -20,7 +20,15 @@
           "named": true
         },
         {
+          "type": "break_expr",
+          "named": true
+        },
+        {
           "type": "call_expr",
+          "named": true
+        },
+        {
+          "type": "cont_expr",
           "named": true
         },
         {
@@ -54,7 +62,7 @@
     "type": "as_expr",
     "named": true,
     "fields": {
-      "type": {
+      "ty": {
         "multiple": false,
         "required": true,
         "types": [
@@ -68,7 +76,7 @@
           }
         ]
       },
-      "value": {
+      "val": {
         "multiple": false,
         "required": true,
         "types": [
@@ -85,7 +93,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -153,7 +169,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -199,7 +223,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -248,7 +280,7 @@
           }
         ]
       },
-      "type": {
+      "ty": {
         "multiple": false,
         "required": false,
         "types": [
@@ -262,7 +294,7 @@
           }
         ]
       },
-      "value": {
+      "val": {
         "multiple": false,
         "required": false,
         "types": [
@@ -279,7 +311,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -339,7 +379,15 @@
           "named": true
         },
         {
+          "type": "break_expr",
+          "named": true
+        },
+        {
           "type": "call_expr",
+          "named": true
+        },
+        {
+          "type": "cont_expr",
           "named": true
         },
         {
@@ -382,20 +430,20 @@
     }
   },
   {
-    "type": "call_expr",
+    "type": "break_expr",
     "named": true,
     "fields": {
-      "args": {
+      "lab": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
-            "type": "args",
+            "type": "label",
             "named": true
           }
         ]
       },
-      "fn": {
+      "val": {
         "multiple": false,
         "required": true,
         "types": [
@@ -412,7 +460,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -444,6 +500,97 @@
     }
   },
   {
+    "type": "call_expr",
+    "named": true,
+    "fields": {
+      "args": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "args",
+            "named": true
+          }
+        ]
+      },
+      "fn": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "as_expr",
+            "named": true
+          },
+          {
+            "type": "assign_expr",
+            "named": true
+          },
+          {
+            "type": "block",
+            "named": true
+          },
+          {
+            "type": "break_expr",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
+            "named": true
+          },
+          {
+            "type": "for_expr",
+            "named": true
+          },
+          {
+            "type": "ident",
+            "named": true
+          },
+          {
+            "type": "if_expr",
+            "named": true
+          },
+          {
+            "type": "labeled",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "while_expr",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "cont_expr",
+    "named": true,
+    "fields": {
+      "lab": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "label",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "empty_stmt",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "expr_stmt",
     "named": true,
     "fields": {},
@@ -464,7 +611,15 @@
           "named": true
         },
         {
+          "type": "break_expr",
+          "named": true
+        },
+        {
           "type": "call_expr",
+          "named": true
+        },
+        {
+          "type": "cont_expr",
           "named": true
         },
         {
@@ -523,7 +678,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -614,7 +777,7 @@
           }
         ]
       },
-      "else": {
+      "el": {
         "multiple": true,
         "required": false,
         "types": [
@@ -642,7 +805,7 @@
           }
         ]
       },
-      "value": {
+      "range": {
         "multiple": false,
         "required": true,
         "types": [
@@ -659,7 +822,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -716,7 +887,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -802,7 +981,7 @@
           }
         ]
       },
-      "label": {
+      "lab": {
         "multiple": false,
         "required": true,
         "types": [
@@ -880,7 +1059,15 @@
           "named": true
         },
         {
+          "type": "break_expr",
+          "named": true
+        },
+        {
           "type": "call_expr",
+          "named": true
+        },
+        {
+          "type": "cont_expr",
           "named": true
         },
         {
@@ -946,6 +1133,10 @@
         },
         {
           "type": "binding_decl",
+          "named": true
+        },
+        {
+          "type": "empty_stmt",
           "named": true
         },
         {
@@ -1025,7 +1216,15 @@
             "named": true
           },
           {
+            "type": "break_expr",
+            "named": true
+          },
+          {
             "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "cont_expr",
             "named": true
           },
           {
@@ -1054,7 +1253,7 @@
           }
         ]
       },
-      "else": {
+      "el": {
         "multiple": true,
         "required": false,
         "types": [
@@ -1115,12 +1314,16 @@
     "named": false
   },
   {
-    "type": "else",
+    "type": "break",
     "named": false
   },
   {
-    "type": "empty_stmt",
-    "named": true
+    "type": "cont",
+    "named": false
+  },
+  {
+    "type": "else",
+    "named": false
   },
   {
     "type": "fn",
