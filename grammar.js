@@ -314,7 +314,7 @@ module.exports = grammar({
     ),
 
     label: $ => $._label,
-    _label: _ => seq("'", token.immediate(IdentRegex)),
+    _label: _ => token(seq("'", token.immediate(IdentRegex))),
 
     underscore: $ => $._underscore,
     _underscore: _ => '_',
