@@ -77,7 +77,7 @@ module.exports = grammar({
       optional(field('paras', $.paras)),
       optional(seq(
         '->',
-        field('ret', $.type),
+        field('ret', $._type),
       )),
     ),
 
