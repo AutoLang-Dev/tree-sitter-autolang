@@ -54,7 +54,7 @@ module.exports = grammar({
     decl_stmt: $ => $._decl_stmt,
     _decl_stmt: $ => choice(
       $.fn_def,
-      $.binding_decl,
+      $.binding,
     ),
 
     fn_def: $ => $._fn_def,
@@ -104,14 +104,14 @@ module.exports = grammar({
       $._expr_stmt,
     ),
 
-    binding_decl: $ => $._binding_decl,
-    _binding_decl: $ => choice(
-      $._typed_binding_decl,
-      $._auto_binding_decl,
+    binding: $ => $._binding,
+    _binding: $ => choice(
+      $._typed_binding,
+      $._auto_binding,
     ),
 
-    typed_binding_decl: $ => $._typed_binding_decl,
-    _typed_binding_decl: $ => seq(
+    typed_binding: $ => $._typed_binding,
+    _typed_binding: $ => seq(
       field('pat', $._pattern),
       ':',
       field('ty', $._type),
@@ -122,8 +122,8 @@ module.exports = grammar({
       ';',
     ),
 
-    auto_binding_decl: $ => $._auto_binding_decl,
-    _auto_binding_decl: $ => seq(
+    auto_binding: $ => $._auto_binding,
+    _auto_binding: $ => seq(
       field('pat', $._pattern),
       ':',
       '=',
