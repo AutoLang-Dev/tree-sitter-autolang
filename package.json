@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-autolang",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "AutoLang Parser",
   "repository": "https://github.com/autolang-dev/tree-sitter-autolang",
   "license": "MIT",
