@@ -19,7 +19,6 @@ module.exports = grammar({
   name: 'autolang',
 
   conflicts: $ => [
-    [$._fn_def, $._pat_ident],
   ],
 
   externals: $ => [$.llvm_ir],
@@ -58,7 +57,7 @@ module.exports = grammar({
     ),
 
     fn_def: $ => $._fn_def,
-    _fn_def: $ => seq(
+    _fn_def: $ => prec(1, seq(
       field('name', $.ident),
       ':',
       field('sign', $.fn_sign),
@@ -69,7 +68,7 @@ module.exports = grammar({
           field('body', $._fn_body),
         )
       ),
-    ),
+    )),
 
     fn_sign: $ => $._fn_sign,
     _fn_sign: $ => seq(
