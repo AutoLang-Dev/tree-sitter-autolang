@@ -22,7 +22,10 @@ module.exports = grammar({
   conflicts: $ => [
   ],
 
-  externals: $ => [$.llvm_ir],
+  externals: $ => [
+    $.llvm_ir,
+    $.error_sential,
+  ],
 
   reserved: {
     global: _ => [

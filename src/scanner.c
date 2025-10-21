@@ -4,6 +4,7 @@
 
 enum TokenType {
   LLVM_IR,
+  ERROR_SENTINEL,
 };
 
 void *tree_sitter_autolang_external_scanner_create() { return NULL; }
@@ -23,6 +24,10 @@ static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 
 bool tree_sitter_autolang_external_scanner_scan(void *payload, TSLexer *lexer,
                                                 const bool *valid_symbols) {
+  if (valid_symbols[ERROR_SENTINEL]) {
+    return false;
+  }
+
   if (valid_symbols[LLVM_IR]) {
     int depth = 0;
     for (;; advance(lexer)) {
