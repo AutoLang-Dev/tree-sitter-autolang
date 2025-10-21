@@ -114,7 +114,7 @@ module.exports = grammar({
       ':',
       field('ty', optional($._type)),
       '=',
-      field('val', choice(
+      field('init', choice(
         $._expr,
         $.underscore,
       )),
@@ -203,8 +203,8 @@ module.exports = grammar({
     if_expr: $ => seq(
       'if',
       field('cond', $._expr),
-      field('tru', $.block),
-      optional(field('fls', $._else_clause)),
+      field('body', $.block),
+      optional(field('el', $._else_clause)),
     ),
 
     _else_clause: $ => seq(
