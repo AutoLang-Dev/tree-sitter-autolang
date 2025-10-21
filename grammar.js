@@ -39,7 +39,7 @@ module.exports = grammar({
     ],
   },
 
-  word: $ => $._ident,
+  word: $ => $.ident,
 
   rules: {
     trans_unit: $ => repeat($._global_stmt),
@@ -310,14 +310,12 @@ module.exports = grammar({
       '}',
     ),
 
-    label: $ => $._label,
-    _label: _ => token(seq("'", token.immediate(IdentRegex))),
+    label: _ => token(seq("'", token.immediate(IdentRegex))),
 
     underscore: $ => $._underscore,
     _underscore: _ => '_',
 
-    ident: $ => $._ident,
-    _ident: _ => IdentRegex,
+    ident: _ => token(IdentRegex),
   },
 });
 
