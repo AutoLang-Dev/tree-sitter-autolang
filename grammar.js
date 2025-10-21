@@ -50,14 +50,12 @@ module.exports = grammar({
       $.empty_stmt,
     ),
 
-    decl_stmt: $ => $._decl_stmt,
     _decl_stmt: $ => choice(
       $.fn_def,
       $.binding,
     ),
 
-    fn_def: $ => $._fn_def,
-    _fn_def: $ => prec(1, seq(
+    fn_def: $ => prec(1, seq(
       field('name', $.ident),
       ':',
       field('sign', $.fn_sign),
@@ -70,8 +68,7 @@ module.exports = grammar({
       ),
     )),
 
-    fn_sign: $ => $._fn_sign,
-    _fn_sign: $ => seq(
+    fn_sign: $ => seq(
       'fn',
       optional(field('paras', $.paras)),
       optional(seq(
@@ -80,15 +77,13 @@ module.exports = grammar({
       )),
     ),
 
-    paras: $ => $._paras,
-    _paras: $ => seq(
+    paras: $ => seq(
       '(',
       sepBy(',', $.para),
       ')',
     ),
 
-    para: $ => $._para,
-    _para: $ => seq(
+    para: $ => seq(
       field('pat', $.pat_ident),
       optional(seq(
         ':',
@@ -96,20 +91,17 @@ module.exports = grammar({
       ))
     ),
 
-    fn_body: $ => $._fn_body,
     _fn_body: $ => choice(
       prec(1, $.block),
       $.asm_block,
-      $._expr_stmt,
+      $.expr_stmt,
     ),
 
-    binding: $ => $._binding,
-    _binding: $ => choice(
+    binding: $ => choice(
       $._typed_binding,
       $._auto_binding,
     ),
 
-    typed_binding: $ => $._typed_binding,
     _typed_binding: $ => seq(
       field('pat', $._pattern),
       ':',
@@ -121,7 +113,6 @@ module.exports = grammar({
       ';',
     ),
 
-    auto_binding: $ => $._auto_binding,
     _auto_binding: $ => seq(
       field('pat', $._pattern),
       ':',
@@ -130,59 +121,40 @@ module.exports = grammar({
       ';',
     ),
 
-    type: $ => $._type,
     _type: $ => choice(
       $.ident,
       $.type_infer,
     ),
 
-    type_infer: $ => $._type_infer,
-    _type_infer: $ => $.underscore,
+    type_infer: $ => $.underscore,
 
-    pattern: $ => $._pattern,
     _pattern: $ => choice(
       $.pat_wild,
       $.pat_ident,
     ),
 
-    pat_wild: $ => $._pat_wild,
-    _pat_wild: $ => $._underscore,
+    pat_wild: $ => $.underscore,
 
-    pat_ident: $ => $._pat_ident,
-    _pat_ident: $ => seq(
+    pat_ident: $ => seq(
       optional('mut'),
       field('id', $.ident),
     ),
 
-    pat_type: $ => $._pat_type,
-    _pat_type: $ => seq(
+    pat_type: $ => seq(
       field('pat', $.pat_ident),
       ':',
       field('ty', $._type),
     ),
 
-    stmt: $ => $._stmt,
-    _stmt: $ => choice(
-      $.expr_stmt,
-      $._expr_ending_with_block,
-      $._global_stmt,
-    ),
-
-    empty_stmt: $ => $._empty_stmt,
-    _empty_stmt: _ => ';',
-
-    asm_block: $ => $._asm_block,
-    _asm_block: $ => seq(
+    asm_block: $ => seq(
       'asm',
       '{',
       field('inner', $.llvm_ir),
       '}',
     ),
 
-    expr_stmt: $ => $._expr_stmt,
-    _expr_stmt: $ => seq($._expr, ';'),
+    expr_stmt: $ => seq($._expr, ';'),
 
-    expr: $ => $._expr,
     _expr: $ => prec(1, choice(
       $.ident,
       $.assign_expr,
@@ -194,8 +166,7 @@ module.exports = grammar({
       $._expr_ending_with_block,
     )),
 
-    assign_expr: $ => $._assign_expr,
-    _assign_expr: $ => prec.left(PREC.assign, seq(
+    assign_expr: $ => prec.left(PREC.assign, seq(
       field('lhs', $._expr),
       '=',
       field('rhs', $._expr),
@@ -206,42 +177,36 @@ module.exports = grammar({
       field('args', $.args),
     )),
 
-    args: $ => $._args,
-    _args: $ => seq(
+    args: $ => seq(
       '(',
       sepBy(',', $._expr),
       optional(','),
       ')',
     ),
 
-    paren_expr: $ => $._paren_expr,
-    _paren_expr: $ => seq(
+    paren_expr: $ => seq(
       '(',
       $._expr,
       ')',
     ),
 
-    as_expr: $ => $._as_expr,
-    _as_expr: $ => prec.left(PREC.as, seq(
+    as_expr: $ => prec.left(PREC.as, seq(
       field('val', $._expr),
       'as',
       field('ty', $._type),
     )),
 
-    break_expr: $ => $._break_expr,
-    _break_expr: $ => prec.left(seq(
+    break_expr: $ => prec.left(seq(
       'break',
       field('lab', optional($.label)),
       field('val', $._expr),
     )),
 
-    cont_expr: $ => $._cont_expr,
-    _cont_expr: $ => prec.left(seq(
+    cont_expr: $ => prec.left(seq(
       'cont',
       field('lab', optional($.label)),
     )),
 
-    expr_ending_with_block: $ => $._expr_ending_with_block,
     _expr_ending_with_block: $ => choice(
       $.labeled,
       $.block,
@@ -250,15 +215,13 @@ module.exports = grammar({
       $.for_expr,
     ),
 
-    if_expr: $ => $._if_expr,
-    _if_expr: $ => seq(
+    if_expr: $ => seq(
       'if',
       field('cond', $._expr),
       field('tru', $.block),
       optional(field('fls', $._else_clause)),
     ),
 
-    else_clause: $ => $._else_clause,
     _else_clause: $ => seq(
       'else',
       choice(
@@ -267,16 +230,14 @@ module.exports = grammar({
       ),
     ),
 
-    while_expr: $ => $._while_expr,
-    _while_expr: $ => seq(
+    while_expr: $ => seq(
       'while',
       field('cond', $._expr),
       field('body', $.block),
       optional(field('el', $._loop_else_clause)),
     ),
 
-    for_expr: $ => $._for_expr,
-    _for_expr: $ => seq(
+    for_expr: $ => seq(
       'for',
       field('pat', $._pattern),
       'in',
@@ -285,14 +246,12 @@ module.exports = grammar({
       optional(field('el', $._loop_else_clause)),
     ),
 
-    loop_else_clause: $ => $._loop_else_clause,
     _loop_else_clause: $ => seq(
       'else',
       $.block,
     ),
 
-    labeled: $ => $._labeled,
-    _labeled: $ => seq(
+    labeled: $ => seq(
       field('lab', $.label),
       ':',
       field('block', choice(
@@ -302,8 +261,7 @@ module.exports = grammar({
       )),
     ),
 
-    block: $ => $._block,
-    _block: $ => seq(
+    block: $ => seq(
       '{',
       repeat($._stmt),
       optional($._expr),
@@ -312,8 +270,7 @@ module.exports = grammar({
 
     label: _ => token(seq("'", token.immediate(IdentRegex))),
 
-    underscore: $ => $._underscore,
-    _underscore: _ => '_',
+    underscore: _ => '_',
 
     ident: _ => token(IdentRegex),
   },
