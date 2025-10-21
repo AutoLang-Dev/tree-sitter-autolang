@@ -11,6 +11,7 @@ const IdentRegex = /[_\p{XID_Start}][\p{XID_Continue}]*/u;
 
 const PREC = {
   call: 15,
+  field: 14,
   as: 11,
   assign: 0,
   semi: -1,
@@ -65,7 +66,6 @@ module.exports = grammar({
       $.return_expr,
       $.break_expr,
       $.cont_expr,
-      $.labeled,
       $.block,
       $.if_expr,
       $.while_expr,
@@ -187,7 +187,12 @@ module.exports = grammar({
       field('ty', $._type),
     )),
 
-    return_expr: $ => prec.right(choice(
+    return_expr: $ => choice(
+      $._prefix_return,
+      $._suffix_return,
+    ),
+
+    _prefix_return: $ => prec.right(choice(
       seq(
         'return',
         field('val', $._expr),
@@ -195,10 +200,28 @@ module.exports = grammar({
       'return',
     )),
 
-    break_expr: $ => prec.right(seq(
+    _suffix_return: $ => prec(PREC.field, seq(
+      field('val', $._expr),
+      '.',
+      'return',
+    )),
+
+    break_expr: $ => choice(
+      $._prefix_break,
+      $._suffix_break,
+    ),
+
+    _prefix_break: $ => prec.right(seq(
       'break',
       field('lab', optional($.label)),
       field('val', $._expr),
+    )),
+
+    _suffix_break: $ => prec(PREC.field, seq(
+      field('val', $._expr),
+      '.',
+      'break',
+      field('lab', optional($.label)),
     )),
 
     cont_expr: $ => seq(
@@ -206,50 +229,105 @@ module.exports = grammar({
       field('lab', optional($.label)),
     ),
 
-    if_expr: $ => seq(
+    if_expr: $ => choice(
+      $._prefix_if,
+      $._suffix_if,
+    ),
+
+    _prefix_if: $ => seq(
       'if',
       field('cond', $._expr),
       field('body', $.block),
-      optional(field('el', $._else_clause)),
+      optional($._else_clause),
     ),
+
+    _suffix_if: $ => prec(PREC.field, seq(
+      field('cond', $._expr),
+      '.',
+      'if',
+      field('body', $.block),
+      optional($._else_clause),
+    )),
 
     _else_clause: $ => seq(
       'else',
-      choice(
+      field('el', choice(
         $.block,
-        $.if_expr,
-      ),
+        alias($._prefix_if, $.if_expr),
+      )),
     ),
 
-    while_expr: $ => seq(
+    while_expr: $ => choice(
+      $._prefix_while,
+      $._suffix_while,
+    ),
+
+    _prefix_while: $ => seq(
+      optional(seq(
+        field('lab', $.label),
+        ':',
+      )),
       'while',
       field('cond', $._expr),
       field('body', $.block),
-      optional(field('el', $._loop_else_clause)),
+      optional($._loop_else_clause),
     ),
 
-    for_expr: $ => seq(
+    _suffix_while: $ => prec(PREC.field, seq(
+      field('cond', $._expr),
+      '.',
+      optional(seq(
+        field('lab', $.label),
+        ':',
+      )),
+      'while',
+      field('body', $.block),
+      optional($._loop_else_clause),
+    )),
+
+    for_expr: $ => choice(
+      $._prefix_for,
+      $._suffix_for,
+    ),
+
+    _prefix_for: $ => seq(
+      optional(seq(
+        field('lab', $.label),
+        ':',
+      )),
       'for',
       field('pat', $._pattern),
       'in',
       field('range', $._expr),
       field('body', $.block),
-      optional(field('el', $._loop_else_clause)),
+      optional($._loop_else_clause),
     ),
+
+    _suffix_for: $ => prec(PREC.field, seq(
+      field('range', $._expr),
+      '.',
+      optional(seq(
+        field('lab', $.label),
+        ':',
+      )),
+      'for',
+      field('pat', $._pattern),
+      'in',
+      field('body', $.block),
+      optional($._loop_else_clause),
+    )),
 
     _loop_else_clause: $ => seq(
       'else',
-      $.block,
+      field('el', $.block),
     ),
 
-    labeled: $ => seq(
-      field('lab', $.label),
-      ':',
-      field('block', choice(
-        $.block,
-        $.while_expr,
-        $.for_expr,
+    labeled_block: $ => seq(
+      optional(seq(
+        field('lab', $.label),
+        ':',
       )),
+      field('block', $.block),
     ),
 
     block: $ => seq(
