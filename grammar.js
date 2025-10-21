@@ -42,6 +42,12 @@ module.exports = grammar({
 
   word: $ => $.ident,
 
+  supertypes: $ => [
+    $._expr,
+    $._pattern,
+    $._type,
+  ],
+
   rules: {
     trans_unit: $ => listSepBy(';', $._expr),
 
