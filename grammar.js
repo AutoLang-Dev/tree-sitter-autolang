@@ -13,6 +13,7 @@ const PREC = {
   call: 15,
   as: 11,
   assign: 0,
+  semi: -1,
 }
 
 module.exports = grammar({
@@ -42,40 +43,49 @@ module.exports = grammar({
   word: $ => $.ident,
 
   rules: {
-    trans_unit: $ => repeat($._global_stmt),
+    trans_unit: $ => listSepBy(';', $._expr),
 
-    _global_stmt: $ => choice(
+    _expr: $ => choice(
+      $.ident,
+      $.semi_expr,
+      $.assign_expr,
+      $.call_expr,
+      $.paren_expr,
+      $.as_expr,
+      $.break_expr,
+      $.cont_expr,
+      $.labeled,
+      $.block,
+      $.if_expr,
+      $.while_expr,
+      $.for_expr,
       $.asm_block,
-      $._decl_stmt,
-      $.empty_stmt,
+      $._decl,
     ),
 
-    _decl_stmt: $ => choice(
+    _decl: $ => choice(
       $.fn_def,
       $.binding,
     ),
 
-    fn_def: $ => prec(1, seq(
-      field('name', $.ident),
+    fn_def: $ => prec.right(seq(
+      field('name', $._pattern),
       ':',
       field('sign', $.fn_sign),
-      choice(
-        ';',
-        seq(
-          '=',
-          field('body', $._fn_body),
-        )
-      ),
+      optional(seq(
+        '=',
+        field('body', $._expr),
+      )),
     )),
 
-    fn_sign: $ => seq(
+    fn_sign: $ => prec.right(seq(
       'fn',
       optional(field('paras', $.paras)),
       optional(seq(
         '->',
         field('ret', $._type),
       )),
-    ),
+    )),
 
     paras: $ => seq(
       '(',
@@ -91,49 +101,26 @@ module.exports = grammar({
       ))
     ),
 
-    _fn_body: $ => choice(
-      prec(1, $.block),
-      $.asm_block,
-      $.expr_stmt,
-    ),
-
-    binding: $ => choice(
-      $._typed_binding,
-      $._auto_binding,
-    ),
-
-    _typed_binding: $ => seq(
+    binding: $ => prec.right(seq(
       field('pat', $._pattern),
       ':',
-      field('ty', $._type),
-      optional(seq(
-        '=',
-        field('val', $._expr),
-      )),
-      ';',
-    ),
-
-    _auto_binding: $ => seq(
-      field('pat', $._pattern),
-      ':',
+      field('ty', optional($._type)),
       '=',
-      field('val', $._expr),
-      ';',
-    ),
+      field('val', choice(
+        $._expr,
+        $.underscore,
+      )),
+    )),
 
     _type: $ => choice(
       $.ident,
-      $.type_infer,
+      $.underscore,
     ),
-
-    type_infer: $ => $.underscore,
 
     _pattern: $ => choice(
-      $.pat_wild,
+      $.underscore,
       $.pat_ident,
     ),
-
-    pat_wild: $ => $.underscore,
 
     pat_ident: $ => seq(
       optional('mut'),
@@ -153,20 +140,13 @@ module.exports = grammar({
       '}',
     ),
 
-    expr_stmt: $ => seq($._expr, ';'),
-
-    _expr: $ => prec(1, choice(
-      $.ident,
-      $.assign_expr,
-      $.call_expr,
-      $.paren_expr,
-      $.as_expr,
-      $.break_expr,
-      $.cont_expr,
-      $._expr_ending_with_block,
+    semi_expr: $ => prec.left(PREC.semi, seq(
+      field('lhs', $._expr),
+      ';',
+      field('rhs', optional($._expr)),
     )),
 
-    assign_expr: $ => prec.left(PREC.assign, seq(
+    assign_expr: $ => prec.right(PREC.assign, seq(
       field('lhs', $._expr),
       '=',
       field('rhs', $._expr),
@@ -190,29 +170,21 @@ module.exports = grammar({
       ')',
     ),
 
-    as_expr: $ => prec.left(PREC.as, seq(
+    as_expr: $ => prec(PREC.as, seq(
       field('val', $._expr),
       'as',
       field('ty', $._type),
     )),
 
-    break_expr: $ => prec.left(seq(
+    break_expr: $ => prec.right(seq(
       'break',
       field('lab', optional($.label)),
       field('val', $._expr),
     )),
 
-    cont_expr: $ => prec.left(seq(
+    cont_expr: $ => seq(
       'cont',
       field('lab', optional($.label)),
-    )),
-
-    _expr_ending_with_block: $ => choice(
-      $.labeled,
-      $.block,
-      $.if_expr,
-      $.while_expr,
-      $.for_expr,
     ),
 
     if_expr: $ => seq(
@@ -263,7 +235,6 @@ module.exports = grammar({
 
     block: $ => seq(
       '{',
-      repeat($._stmt),
       optional($._expr),
       '}',
     ),
@@ -290,4 +261,29 @@ function sepBy1(sep, rule) {
  */
 function sepBy(sep, rule) {
   return optional(sepBy1(sep, rule));
+}
+
+/**
+ * @param {RuleOrLiteral} sep
+ * @param {RuleOrLiteral} rule
+ */
+function listSepBy1(sep, rule) {
+  return seq(
+    sepBy1(sep, rule),
+    optional(sep),
+  );
+}
+
+/**
+ * @param {RuleOrLiteral} sep
+ * @param {RuleOrLiteral} rule
+ */
+function listSepBy(sep, rule) {
+  return seq(
+    repeat(seq(
+      rule,
+      sep,
+    )),
+    optional(rule),
+  );
 }
