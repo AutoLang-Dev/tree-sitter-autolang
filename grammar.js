@@ -35,6 +35,7 @@ module.exports = grammar({
       'while',
       'for',
       'in',
+      'return',
       'break',
       'cont',
     ],
@@ -58,6 +59,7 @@ module.exports = grammar({
       $.call_expr,
       $.paren_expr,
       $.as_expr,
+      $.return_expr,
       $.break_expr,
       $.cont_expr,
       $.labeled,
@@ -180,6 +182,11 @@ module.exports = grammar({
       field('val', $._expr),
       'as',
       field('ty', $._type),
+    )),
+
+    return_expr: $ => prec.right(choice(
+      seq('return', $._expr),
+      'return',
     )),
 
     break_expr: $ => prec.right(seq(
