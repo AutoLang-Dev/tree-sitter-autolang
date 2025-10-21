@@ -188,7 +188,10 @@ module.exports = grammar({
     )),
 
     return_expr: $ => prec.right(choice(
-      seq('return', $._expr),
+      seq(
+        'return',
+        field('val', $._expr),
+      ),
       'return',
     )),
 
