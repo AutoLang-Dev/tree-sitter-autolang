@@ -165,6 +165,7 @@ module.exports = grammar({
     stmt: $ => $._stmt,
     _stmt: $ => choice(
       $.expr_stmt,
+      $._expr_ending_with_block,
       $._global_stmt,
     ),
 
@@ -180,13 +181,10 @@ module.exports = grammar({
     ),
 
     expr_stmt: $ => $._expr_stmt,
-    _expr_stmt: $ => choice(
-      seq($._expr, ';'),
-      prec(1, $._expr_ending_with_block),
-    ),
+    _expr_stmt: $ => seq($._expr, ';'),
 
     expr: $ => $._expr,
-    _expr: $ => choice(
+    _expr: $ => prec(1, choice(
       $.ident,
       $.assign_expr,
       $.call_expr,
@@ -195,7 +193,7 @@ module.exports = grammar({
       $.break_expr,
       $.cont_expr,
       $._expr_ending_with_block,
-    ),
+    )),
 
     assign_expr: $ => $._assign_expr,
     _assign_expr: $ => prec.left(PREC.assign, seq(
