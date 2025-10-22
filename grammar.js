@@ -206,12 +206,9 @@ module.exports = grammar({
       $._suffix_return,
     ),
 
-    _prefix_return: $ => prec.right(choice(
-      seq(
-        'return',
-        field('val', $._expr),
-      ),
+    _prefix_return: $ => prec.right(seq(
       'return',
+      field('val', optional($._expr)),
     )),
 
     _suffix_return: $ => prec(PREC.field, seq(
@@ -228,7 +225,7 @@ module.exports = grammar({
     _prefix_break: $ => prec.right(seq(
       'break',
       field('lab', optional($.label)),
-      field('val', $._expr),
+      field('val', optional($._expr)),
     )),
 
     _suffix_break: $ => prec(PREC.field, seq(
