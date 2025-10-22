@@ -48,7 +48,7 @@ module.exports = grammar({
   word: $ => $.ident,
 
   supertypes: $ => [
-    $._expr,
+    $.expr,
     $._pattern,
     $._type,
   ],
@@ -56,9 +56,18 @@ module.exports = grammar({
   rules: {
     trans_unit: $ => listSepBy(';', $._expr),
 
+    expr: $ => choice(
+      $._expr,
+      $.semi_expr,
+    ),
+
+    _expr_or_semi: $ => choice(
+      $.semi_expr,
+      $._expr,
+    ),
+
     _expr: $ => choice(
       $.ident,
-      $.semi_expr,
       $.assign_expr,
       $.call_expr,
       $.paren_expr,
@@ -152,7 +161,7 @@ module.exports = grammar({
     ),
 
     semi_expr: $ => prec.left(PREC.semi, seq(
-      field('lhs', $._expr),
+      field('lhs', $._expr_or_semi),
       ';',
       field('rhs', optional($._expr)),
     )),
@@ -170,8 +179,7 @@ module.exports = grammar({
 
     args: $ => seq(
       '(',
-      sepBy(',', $._expr),
-      optional(','),
+      listSepBy(',', $._expr),
       ')',
     ),
 
@@ -332,7 +340,7 @@ module.exports = grammar({
 
     block: $ => seq(
       '{',
-      optional($._expr),
+      optional($._expr_or_semi),
       '}',
     ),
 
