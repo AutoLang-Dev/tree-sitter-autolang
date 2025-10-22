@@ -67,11 +67,12 @@ module.exports = grammar({
     ),
 
     _expr: $ => choice(
-      $.ident,
+      prec(1, $.ident),
       $.assign_expr,
       $.call_expr,
       $.paren_expr,
       $.as_expr,
+      $.tuple_expr,
       $.return_expr,
       $.break_expr,
       $.cont_expr,
@@ -135,7 +136,10 @@ module.exports = grammar({
     _type: $ => choice(
       $.ident,
       $.underscore,
+      $.tuple_type,
     ),
+
+    tuple_type: $ => tuple($._type, false),
 
     _pattern: $ => choice(
       $.underscore,
@@ -194,6 +198,8 @@ module.exports = grammar({
       'as',
       field('ty', $._type),
     )),
+
+    tuple_expr: $ => prec(1, tuple($._expr, true)),
 
     return_expr: $ => choice(
       $._prefix_return,
@@ -391,4 +397,42 @@ function listSepBy(sep, rule) {
     )),
     optional(rule),
   );
+}
+
+/**
+ * @param {RuleOrLiteral} rule
+ * @param {boolean} tail_sep
+ */
+function tuple(rule, tail_sep) {
+  if (tail_sep) {
+    return seq(
+      '(',
+      optional(seq(
+        repeat1(seq(
+          rule,
+          ',',
+        )),
+        optional(rule),
+      )),
+      ')',
+    );
+  } else {
+    return seq(
+      '(',
+      listSepBy(',', rule),
+      ')',
+    );
+  }
+  // const rep = tail_sep ? repeat1 : repeat;
+  // return seq(
+  //   '(',
+  //   optional(seq(
+  //     rep(seq(
+  //       rule,
+  //       ',',
+  //     )),
+  //     optional(rule),
+  //   )),
+  //   ')',
+  // );
 }
