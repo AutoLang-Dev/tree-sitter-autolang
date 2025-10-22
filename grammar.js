@@ -49,7 +49,7 @@ module.exports = grammar({
 
   supertypes: $ => [
     $.expr,
-    $._pattern,
+    $.pattern,
     $._type,
   ],
 
@@ -141,7 +141,17 @@ module.exports = grammar({
 
     tuple_type: $ => tuple($._type, false),
 
-    _pattern: $ => choice(
+    pattern: $ => choice(
+      $.pat_type,
+      $._pattern,
+    ),
+
+    _pattern: $ => seq(
+      optional('$'),
+      $._pat,
+    ),
+
+    _pat: $ => choice(
       $.underscore,
       $.pat_ident,
     ),
