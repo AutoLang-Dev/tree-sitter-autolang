@@ -115,7 +115,7 @@ module.exports = grammar({
     ),
 
     para: $ => seq(
-      field('pat', $.pat_ident),
+      field('pat', $._pattern),
       optional(seq(
         ':',
         field('ty', $._type),
