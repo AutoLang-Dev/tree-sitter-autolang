@@ -154,11 +154,18 @@ module.exports = grammar({
     _pat: $ => choice(
       $.underscore,
       $.pat_ident,
+      $.pat_tuple,
     ),
 
     pat_ident: $ => seq(
       optional('mut'),
       field('id', $.ident),
+    ),
+
+    pat_tuple: $ => seq(
+      '(',
+      listSepBy(',', $._pattern),
+      ')',
     ),
 
     pat_type: $ => seq(
