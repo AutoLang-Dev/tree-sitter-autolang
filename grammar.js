@@ -76,6 +76,7 @@ module.exports = grammar({
       $.return_expr,
       $.break_expr,
       $.cont_expr,
+      $.labeled_block,
       $.block,
       $.if_expr,
       $.while_expr,
@@ -351,10 +352,8 @@ module.exports = grammar({
     ),
 
     labeled_block: $ => seq(
-      optional(seq(
-        field('lab', $.label),
-        ':',
-      )),
+      field('lab', $.label),
+      ':',
       field('block', $.block),
     ),
 
