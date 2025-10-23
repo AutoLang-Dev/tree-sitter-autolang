@@ -107,6 +107,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "labeled_block"
+        },
+        {
+          "type": "SYMBOL",
           "name": "block"
         },
         {
@@ -306,7 +310,7 @@
           "name": "pat",
           "content": {
             "type": "SYMBOL",
-            "name": "pat_ident"
+            "name": "_pattern"
           }
         },
         {
@@ -1522,29 +1526,16 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "FIELD",
-                  "name": "lab",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "label"
-                  }
-                },
-                {
-                  "type": "STRING",
-                  "value": ":"
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "FIELD",
+          "name": "lab",
+          "content": {
+            "type": "SYMBOL",
+            "name": "label"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ":"
         },
         {
           "type": "FIELD",
